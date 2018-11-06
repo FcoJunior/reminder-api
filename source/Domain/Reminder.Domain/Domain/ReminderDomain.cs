@@ -9,10 +9,5 @@ namespace Reminder.Domain
         public string Description { get; set; }
         public DateTime Date { get; set; }
         public string Sponsor { get; set; }
-        public bool Expired {
-            get {
-                return DateTime.Now > this.Date ? true : false;
-            }
-        }
     }
 }

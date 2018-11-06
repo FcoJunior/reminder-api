@@ -9,6 +9,5 @@ namespace Reminder.Presentation.Api.ViewModel
         public string Description { get; set; }
         public DateTime Date { get; set; }
         public string Sponsor { get; set; }
-        public bool Expired { get; set; }
     }
 }

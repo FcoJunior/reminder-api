@@ -7,6 +7,7 @@ using System.Linq;
 using System;
 using AutoMapper;
 using Reminder.Infra.Data.Entities;
+using Reminder.Domain.Selector;
 
 namespace Reminder.Infra.Data.Repository
 {
@@ -29,8 +30,35 @@ namespace Reminder.Infra.Data.Repository
             return reminder;
         }
 
-        public IEnumerable<ReminderDomain> GetAll()
+        public IEnumerable<ReminderDomain> GetExpiresTo(int minutes)
         {
+            var query = _context.Reminder.Find(x => x.Date >= DateTime.Now && x.Date <= DateTime.Now.AddMinutes(minutes));
+            return this._mapper.Map<IEnumerable<ReminderDomain>>(query.ToList());
+        }
+
+        public IEnumerable<ReminderDomain> Get(ReminderSelector selector) {
+            
+            IFindFluent<ReminderEntity, ReminderEntity> query;
+
+            if (!string.IsNullOrEmpty(selector.Title)) {
+                query = _context.Reminder.Find(x => x.Title.StartsWith(selector.Title));
+            } else {
+                query = _context.Reminder.Find(_ => true);
+            }
+
+            query = query.Skip((selector.Page - 1) * selector.RegisterPerPage);
+            query = query.Limit(selector.RegisterPerPage);
+
+            if (selector.Ordination == OrderBy.ASC) {
+                query = query.Sort(Builders<ReminderEntity>.Sort.Ascending(selector.OrderByField));                
+            } else {
+                query = query.Sort(Builders<ReminderEntity>.Sort.Descending(selector.OrderByField));
+            }
+
+            return this._mapper.Map<IEnumerable<ReminderDomain>>(query.ToList());
+        }
+
+        public IEnumerable<ReminderDomain> GetAll() {
             var result = _context.Reminder.Find(_ => true).ToList();
             return this._mapper.Map<IEnumerable<ReminderDomain>>(result);
         }

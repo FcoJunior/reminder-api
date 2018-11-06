@@ -8,6 +8,7 @@ using AutoMapper;
 using Reminder.Domain.Interfaces.AppService;
 using Reminder.Presentation.Api.ViewModel;
 using Reminder.Domain;
+using Reminder.Domain.Selector;
 
 namespace Reminder.Presentation.Api.Controllers.v1
 {
@@ -39,6 +40,28 @@ namespace Reminder.Presentation.Api.Controllers.v1
             try {
                 var result = this._reminderAppService.Create(this._mapper.Map<ReminderDomain>(reminder));
                 return StatusCode(201, new ResponseViewModel { Data = this._mapper.Map<ReminderViewModel>(result) });
+            } catch(Exception ex) {
+                return StatusCode(500, new ResponseViewModel { ErrorMessage = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        [Route("filter")]
+        public ActionResult GetWithFilter([FromQuery]ReminderSelector selector) {
+            try {
+                var result = this._mapper.Map<IEnumerable<ReminderViewModel>>(this._reminderAppService.Get(selector));
+                return Ok(new ResponseViewModel { Data = result });
+            } catch(Exception ex) {
+                return StatusCode(500, new ResponseViewModel { ErrorMessage = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        [Route("ExpiresIn/{minutes}")]
+        public ActionResult GetForNotify(int minutes) {
+            try {
+                var result = this._mapper.Map<IEnumerable<ReminderViewModel>>(this._reminderAppService.GetForNotify(minutes));
+                return Ok(new ResponseViewModel { Data = result });
             } catch(Exception ex) {
                 return StatusCode(500, new ResponseViewModel { ErrorMessage = ex.Message });
             }
