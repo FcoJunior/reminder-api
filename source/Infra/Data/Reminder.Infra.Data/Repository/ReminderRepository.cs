@@ -41,7 +41,7 @@ namespace Reminder.Infra.Data.Repository
             IFindFluent<ReminderEntity, ReminderEntity> query;
 
             if (!string.IsNullOrEmpty(selector.Title)) {
-                query = _context.Reminder.Find(x => x.Title.StartsWith(selector.Title));
+                query = _context.Reminder.Find(x => x.Title.ToLower().StartsWith(selector.Title.ToLower()));
             } else {
                 query = _context.Reminder.Find(_ => true);
             }
@@ -56,11 +56,6 @@ namespace Reminder.Infra.Data.Repository
             }
 
             return this._mapper.Map<IEnumerable<ReminderDomain>>(query.ToList());
-        }
-
-        public IEnumerable<ReminderDomain> GetAll() {
-            var result = _context.Reminder.Find(_ => true).ToList();
-            return this._mapper.Map<IEnumerable<ReminderDomain>>(result);
         }
     }
 }

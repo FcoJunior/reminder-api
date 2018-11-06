@@ -24,10 +24,6 @@ namespace Reminder.Application.Service
       return this._reminderRepository.Get(selector);
     }
 
-    public IEnumerable<ReminderDomain> GetAll() {
-      return this._reminderRepository.GetAll();
-    }
-
     public IEnumerable<ReminderDomain> GetForNotify(int minutes)
     {
       return this._reminderRepository.GetExpiresTo(minutes);

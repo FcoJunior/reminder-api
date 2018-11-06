@@ -25,16 +25,6 @@ namespace Reminder.Presentation.Api.Controllers.v1
             this._reminderAppService = reminderAppService;
         }
 
-        [HttpGet]
-        public ActionResult Get() {
-            try {
-                var result = this._reminderAppService.GetAll();
-                return Ok(new ResponseViewModel { Data = this._mapper.Map<IEnumerable<ReminderViewModel>>(result) });
-            } catch(Exception ex) {
-                return StatusCode(500, new ResponseViewModel { ErrorMessage = ex.Message });
-            }
-        }
-
         [HttpPost]
         public ActionResult Create ([FromBody]ReminderViewModel reminder) {
             try {
@@ -46,8 +36,7 @@ namespace Reminder.Presentation.Api.Controllers.v1
         }
 
         [HttpGet]
-        [Route("filter")]
-        public ActionResult GetWithFilter([FromQuery]ReminderSelector selector) {
+        public ActionResult Get([FromQuery]ReminderSelector selector) {
             try {
                 var result = this._mapper.Map<IEnumerable<ReminderViewModel>>(this._reminderAppService.Get(selector));
                 return Ok(new ResponseViewModel { Data = result });
