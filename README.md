@@ -1,4 +1,4 @@
-# Rminder
+# Reminder
 
 ## Run application
 Run on terminal
